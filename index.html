@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>ZakiyaNet FTTH Calculator PRO</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#0b1220;
+    color:white;
+    padding:20px;
+}
+
+.card{
+    background:#121a2a;
+    padding:20px;
+    border-radius:12px;
+    max-width:520px;
+}
+
+input, select, button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+}
+
+button{
+    background:#00aaff;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.result{
+    margin-top:15px;
+    padding:12px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.green{background:#1f6f3f;}
+.yellow{background:#7a6a00;}
+.red{background:#7a1f1f;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>⚡ ZakiyaNet FTTH Ratio Calculator PRO</h2>
+
+<label>Input Power (dBm)</label>
+<input type="number" id="power" value="0">
+
+<label>Split Power Distribution</label>
+<select id="split1">
+
+<option value="99">1 : 99</option>
+<option value="98">2 : 98</option>
+<option value="97">3 : 97</option>
+<option value="96">4 : 96</option>
+<option value="95">5 : 95</option>
+<option value="94">6 : 94</option>
+<option value="93">7 : 93</option>
+<option value="92">8 : 92</option>
+<option value="91">9 : 91</option>
+<option value="90">10 : 90</option>
+<option value="89">11 : 89</option>
+<option value="88">12 : 88</option>
+<option value="87">13 : 87</option>
+<option value="86">14 : 86</option>
+<option value="85">15 : 85</option>
+<option value="84">16 : 84</option>
+<option value="83">17 : 83</option>
+<option value="82">18 : 82</option>
+<option value="81">19 : 81</option>
+<option value="80">20 : 80</option>
+<option value="75">25 : 75</option>
+<option value="70">30 : 70</option>
+<option value="65">35 : 65</option>
+<option value="60">40 : 60</option>
+<option value="55">45 : 55</option>
+<option value="50">50 : 50</option>
+<option value="33">67 : 33</option>
+<option value="25">75 : 25</option>
+<option value="20">80 : 20</option>
+
+</select>
+
+<label>PLC Split</label>
+<select id="split2">
+<option value="1">1 : 1</option>
+<option value="2">1 : 2</option>
+<option value="4">1 : 4</option>
+<option value="8">1 : 8</option>
+<option value="16">1 : 16</option>
+<option value="32">1 : 32</option>
+<option value="64">1 : 64</option>
+</select>
+
+<button onclick="hitung()">Hitung</button>
+
+<div id="hasil" class="result"></div>
+
+</div>
+
+<script>
+function hitung(){
+
+    let power = parseFloat(document.getElementById("power").value);
+    let split1 = parseFloat(document.getElementById("split1").value);
+    let split2 = parseFloat(document.getElementById("split2").value);
+
+    // LOSS SPLIT 1
+    let loss1 = -10 * Math.log10(split1/100);
+
+    // LOSS PLC
+    let loss2 = 10 * Math.log10(split2);
+
+    // OUTPUT ODP 1
+    let odp1 = power - loss1;
+
+    // OUTPUT ODP 2 (cascade)
+    let odp2 = odp1 - loss2;
+
+    let box = document.getElementById("hasil");
+
+    let status = "";
+    let cls = "";
+
+    if(odp2 >= -10){
+        status = "🟢 AMAN";
+        cls = "green";
+    }else if(odp2 >= -20){
+        status = "🟡 WASPADA";
+        cls = "yellow";
+    }else{
+        status = "🔴 KRITIS";
+        cls = "red";
+    }
+
+    box.className = "result " + cls;
+
+    box.innerHTML =
+    "Loss Split 1: " + loss1.toFixed(2) + " dB<br>" +
+    "Loss PLC: " + loss2.toFixed(2) + " dB<br><br>" +
+    "Power ke ODP 1: " + odp1.toFixed(2) + " dBm<br>" +
+    "Power ke ODP 2: " + odp2.toFixed(2) + " dBm<br><br>" +
+    "Status: " + status;
+}
+</script>
+
+</body>
+</html>
